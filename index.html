@@ -15,7 +15,6 @@
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: #0f0a1a; color: #fff; height: 100vh; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
 
-  /* ЭКРАН ВХОДА */
   #auth { background: #1a1226; padding: 30px 25px; width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
   #auth .logo { width: 120px; height: 120px; margin: 0 auto 20px; display: block; }
   #auth h1 { color: #b57edc; font-size: 36px; margin-bottom: 8px; }
@@ -24,19 +23,17 @@
   #auth input:focus { outline: none; border-color: #b57edc; }
   #auth button { width: 100%; padding: 16px; background: #7d3c98; border: none; border-radius: 14px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 5px; }
   #auth button:active { background: #9b59b6; transform: scale(0.98); }
+  #auth button:disabled { background: #555; cursor: wait; }
   #auth .switch { margin-top: 20px; font-size: 14px; color: #888; cursor: pointer; padding: 10px; }
   #auth .switch:active { color: #b57edc; }
 
-  /* МЕССЕНДЖЕР */
   #messenger { display: none; width: 100%; max-width: 600px; position: relative; }
 
-  /* ЭКРАНЫ */
   .screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #0f0a1a; transition: transform 0.3s ease; will-change: transform; }
   .screen-chats { z-index: 1; }
   .screen-chat { z-index: 2; transform: translateX(100%); background: #0f0a1a; }
   .screen-chat.active { transform: translateX(0); }
 
-  /* ШАПКА */
   .header { padding: 14px 16px; padding-top: calc(14px + env(safe-area-inset-top)); background: #1a1226; border-bottom: 1px solid #2d1f45; display: flex; align-items: center; gap: 10px; min-height: 60px; flex-shrink: 0; }
   .header h2 { color: #b57edc; font-size: 22px; flex: 1; display: flex; align-items: center; gap: 10px; }
   .header h2 img { width: 32px; height: 32px; }
@@ -47,12 +44,10 @@
   .header .title { font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .header .status { font-size: 12px; color: #6bcf7f; }
 
-  /* ПОИСК */
   .search-bar { padding: 10px 16px; background: #1a1226; border-bottom: 1px solid #2d1f45; flex-shrink: 0; }
   .search-bar input { width: 100%; padding: 10px 16px; background: #0f0a1a; border: 1px solid #3d2a5c; border-radius: 20px; color: #fff; font-size: 15px; }
   .search-bar input:focus { outline: none; border-color: #b57edc; }
 
-  /* СПИСОК */
   .chats { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .chat-item { padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #1f1530; }
   .chat-item:active { background: #251b38; }
@@ -63,7 +58,6 @@
 
   .section-title { padding: 12px 16px 6px; font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
 
-  /* ПЕРЕПИСКА */
   .messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 12px; display: flex; flex-direction: column; gap: 8px; background: #0f0a1a; }
   .msg { max-width: 78%; padding: 9px 13px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-wrap: break-word; animation: fadeIn 0.2s; position: relative; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -74,7 +68,6 @@
   .msg .sticker { font-size: 56px; line-height: 1; padding: 4px; }
   .msg .sticker-msg { width: 140px; height: 140px; object-fit: contain; display: block; margin-top: 4px; }
 
-  /* ПАНЕЛЬ СТИКЕРОВ */
   .emoji-panel { display: none; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); background: #1a1226; border-top: 1px solid #2d1f45; max-height: 45vh; overflow-y: auto; flex-shrink: 0; }
   .emoji-panel.open { display: block; }
   .sticker-row { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #2d1f45; }
@@ -84,7 +77,6 @@
   .emoji-row span { font-size: 30px; cursor: pointer; padding: 6px; border-radius: 10px; transition: 0.15s; user-select: none; }
   .emoji-row span:active { background: #2d1f45; transform: scale(0.9); }
 
-  /* ВВОД */
   .input-area { padding: 10px 12px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); background: #1a1226; border-top: 1px solid #2d1f45; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
   .input-area .icon-btn { background: transparent; border: none; color: #b57edc; font-size: 24px; cursor: pointer; padding: 6px; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.15s; }
   .input-area .icon-btn:active { background: #2d1f45; transform: scale(0.9); }
@@ -99,7 +91,6 @@
 </head>
 <body>
 
-<!-- ЭКРАН ВХОДА -->
 <div id="auth">
   <img src="167241.png" alt="Виноград" class="logo">
   <h1>Виноград</h1>
@@ -110,10 +101,8 @@
   <div class="switch" onclick="toggleMode()" id="auth-switch">Нет аккаунта? Зарегистрироваться</div>
 </div>
 
-<!-- МЕССЕНДЖЕР -->
 <div id="messenger">
 
-  <!-- ЭКРАН 1: СПИСОК ЛЮДЕЙ -->
   <div class="screen screen-chats">
     <div class="header">
       <h2><img src="167241.png" alt="🍇"> Виноград</h2>
@@ -128,14 +117,13 @@
     </div>
   </div>
 
-  <!-- ЭКРАН 2: ПЕРЕПИСКА -->
   <div class="screen screen-chat" id="screen-chat">
     <div class="header">
       <button class="icon-btn" onclick="closeChat()">←</button>
       <div class="avatar" id="chat-avatar">?</div>
       <div class="info">
         <div class="title" id="chat-title">Чат</div>
-        <div class="status" id="chat-status">онлайн-чат</div>
+        <div class="status" id="chat-status">личный чат</div>
       </div>
     </div>
 
@@ -154,28 +142,33 @@
 
 </div>
 
-<!-- ПОДКЛЮЧЕНИЕ SUPABASE -->
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-  const SUPABASE_URL = 'ВСТАВЬ_СЮДА_PROJECT_URL';
-  const SUPABASE_KEY = 'sb_publishable_tqd7rDO62mn0bYeE6WW4cw_jcg16fIE';
+  const SUPABASE_URL = 'https://mcdxtrpivjjovbshtbis.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jZHh0cnBpdmpqb3Zic2h0YmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzMDUxMDAsImV4cCI6MjEwNjg4MTEwMH0.5AkQgOlwL4fWMV29ScyJaFpU9n9k5nVp-X09xmbY8Nc';
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-  window.supabase = supabase;
-
-  // Сообщаем основному скрипту, что Supabase готов
-  window.dispatchEvent(new Event('supabase-ready'));
+  let supabase = null;
+  try {
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    window.supabase = supabase;
+    console.log('✅ Supabase подключён');
+    window.dispatchEvent(new Event('supabase-ready'));
+  } catch (e) {
+    console.error('❌ Ошибка Supabase:', e);
+    window.dispatchEvent(new CustomEvent('supabase-error', { detail: e.message }));
+  }
 </script>
 
 <script>
-// ============ ДАННЫЕ ============
 let mode = 'login';
 let currentUser = null;
 let currentChat = null;
+let currentChatUser = null;
 let allUsers = [];
 let messages = {};
 let realtimeChannel = null;
+let usersChannel = null;
 
 const STICKERS = [
   { type: 'image', src: 'sticker1.png', name: 'ИМБА' }
@@ -183,7 +176,6 @@ const STICKERS = [
 
 const EMOJIS = ['😊','😂','🥰','😎','🤔','😴','😭','😡','👍','👎','❤️','🔥','✨','🎉','🍇','🍷','🍕','☕','🌙','⭐','💬','🙌','🤝','💪','😉','😇','🤩','🥳','😔','🤯','😅','🙃','😏','🤗','🤫'];
 
-// ============ АВТОРИЗАЦИЯ ============
 function toggleMode() {
   mode = mode === 'login' ? 'register' : 'login';
   document.getElementById('auth-btn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
@@ -193,29 +185,60 @@ function toggleMode() {
 }
 
 async function authAction() {
+  const btn = document.getElementById('auth-btn');
   const name = document.getElementById('username').value.trim();
   const pass = document.getElementById('password').value.trim();
+
   if (!name || !pass) return alert('Заполни все поля');
 
-  const sb = window.supabase;
-
-  if (mode === 'register') {
-    // Проверяем, нет ли такого имени
-    const { data: existing } = await sb.from('users').select('username').eq('username', name);
-    if (existing && existing.length > 0) return alert('Такое имя уже занято');
-
-    const { error } = await sb.from('users').insert({ username: name, password: pass });
-    if (error) return alert('Ошибка: ' + error.message);
-
-    alert('Аккаунт создан! Теперь войди.');
-    toggleMode();
-  } else {
-    const { data, error } = await sb.from('users').select('*').eq('username', name);
-    if (error) return alert('Ошибка: ' + error.message);
-    if (!data || data.length === 0) return alert('Пользователь не найден');
-    if (data[0].password !== pass) return alert('Неверный пароль');
-    login(name);
+  if (!window.supabase) {
+    return alert('Supabase не подключён. Проверь URL и ключ в коде.');
   }
+
+  const sb = window.supabase;
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Загрузка...';
+
+  try {
+    if (mode === 'register') {
+      const { data: existing, error: checkErr } = await sb
+        .from('users').select('username').eq('username', name);
+
+      if (checkErr) throw new Error('Ошибка проверки: ' + checkErr.message);
+      if (existing && existing.length > 0) {
+        btn.disabled = false; btn.textContent = originalText;
+        return alert('Такое имя уже занято');
+      }
+
+      const { error } = await sb.from('users').insert({ username: name, password: pass });
+      if (error) throw new Error('Ошибка регистрации: ' + error.message);
+
+      alert('Аккаунт создан! Теперь войди.');
+      toggleMode();
+    } else {
+      const { data, error } = await sb
+        .from('users').select('*').eq('username', name);
+
+      if (error) throw new Error('Ошибка входа: ' + error.message);
+      if (!data || data.length === 0) {
+        btn.disabled = false; btn.textContent = originalText;
+        return alert('Пользователь не найден');
+      }
+      if (data[0].password !== pass) {
+        btn.disabled = false; btn.textContent = originalText;
+        return alert('Неверный пароль');
+      }
+      login(name);
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+    alert(e.message);
+  }
+
+  btn.disabled = false;
+  btn.textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
 }
 
 function login(name) {
@@ -235,20 +258,24 @@ function logout() {
   location.reload();
 }
 
-// ============ СПИСОК ПОЛЬЗОВАТЕЛЕЙ ============
 async function loadUsers() {
   const sb = window.supabase;
-  const { data, error } = await sb.from('users').select('username').order('username');
-  if (error) return console.error(error);
-  allUsers = (data || []).map(u => u.username).filter(u => u !== currentUser);
-  renderUserList();
+  try {
+    const { data, error } = await sb.from('users').select('username').order('username');
+    if (error) throw error;
+    allUsers = (data || []).map(u => u.username).filter(u => u !== currentUser);
+    renderUserList();
+  } catch (e) {
+    console.error('Ошибка загрузки пользователей:', e);
+  }
 
-  // Подписываемся на изменения в users (кто-то новый зарегистрировался)
-  sb.channel('users-changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => {
-      loadUsers();
-    })
-    .subscribe();
+  if (!usersChannel) {
+    usersChannel = sb.channel('users-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => {
+        loadUsers();
+      })
+      .subscribe();
+  }
 }
 
 function filterUsers() {
@@ -278,13 +305,12 @@ function renderUserList(query = '') {
   `).join('');
 }
 
-// ============ ЧАТЫ ============
 function getChatId(user1, user2) {
-  // Личный чат — id получается из двух имён в алфавитном порядке
   return 'dm_' + [user1, user2].sort().join('_');
 }
 
 function openChat(otherUser) {
+  currentChatUser = otherUser;
   currentChat = getChatId(currentUser, otherUser);
   document.getElementById('chat-title').textContent = otherUser;
   document.getElementById('chat-avatar').textContent = otherUser[0].toUpperCase();
@@ -299,25 +325,27 @@ function openChat(otherUser) {
 function closeChat() {
   document.getElementById('screen-chat').classList.remove('active');
   document.getElementById('emoji-panel').classList.remove('open');
-  if (realtimeChannel) {
+  if (realtimeChannel && window.supabase) {
     window.supabase.removeChannel(realtimeChannel);
     realtimeChannel = null;
   }
   currentChat = null;
+  currentChatUser = null;
 }
 
-// ============ СООБЩЕНИЯ ============
 async function loadMessages() {
   const sb = window.supabase;
-  const { data, error } = await sb
-    .from('messages')
-    .select('*')
-    .eq('chat_id', currentChat)
-    .order('created_at', { ascending: true });
-
-  if (error) return console.error(error);
-  messages[currentChat] = data || [];
-  renderMessages();
+  try {
+    const { data, error } = await sb
+      .from('messages').select('*')
+      .eq('chat_id', currentChat)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    messages[currentChat] = data || [];
+    renderMessages();
+  } catch (e) {
+    console.error('Ошибка загрузки сообщений:', e);
+  }
 }
 
 function subscribeToMessages() {
@@ -329,7 +357,6 @@ function subscribeToMessages() {
       { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${currentChat}` },
       payload => {
         if (!messages[currentChat]) messages[currentChat] = [];
-        // Проверяем, нет ли уже такого сообщения
         if (!messages[currentChat].some(m => m.id === payload.new.id)) {
           messages[currentChat].push(payload.new);
           renderMessages();
@@ -388,11 +415,9 @@ async function sendStickerImg(index) {
 function sendPhoto(event) {
   const file = event.target.files[0];
   if (!file || !currentChat) return;
-  if (file.size > 500000) return alert('Фото больше 500 КБ. Пока поддерживаем только маленькие.');
+  if (file.size > 500000) return alert('Фото больше 500 КБ.');
   const reader = new FileReader();
-  reader.onload = async e => {
-    await addMessage(e.target.result, 'photo');
-  };
+  reader.onload = async e => await addMessage(e.target.result, 'photo');
   reader.readAsDataURL(file);
   event.target.value = '';
 }
@@ -405,10 +430,9 @@ async function addMessage(content, type) {
     content: content,
     type: type
   });
-  if (error) console.error(error);
+  if (error) console.error('Ошибка отправки:', error);
 }
 
-// ============ ЭМОДЗИ И СТИКЕРЫ ============
 function buildEmojiPanel() {
   const el = document.getElementById('emoji-panel');
   const stickersHtml = STICKERS.map((s, i) =>
@@ -422,7 +446,6 @@ function toggleEmoji() {
   document.getElementById('emoji-panel').classList.toggle('open');
 }
 
-// ============ СВАЙП НАЗАД ============
 let touchStartX = 0, touchStartY = 0;
 document.addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
@@ -437,11 +460,14 @@ document.addEventListener('touchend', e => {
   }
 }, { passive: true });
 
-// ============ СТАРТ ============
 window.addEventListener('supabase-ready', () => {
   const saved = localStorage.getItem('vg_current');
   if (saved) login(saved);
 });
+
+window.addEventListener('supabase-error', (e) => {
+  alert('Ошибка подключения к Supabase: ' + e.detail);
+});
 </script>
 </body>
-  </html>
+</html>
