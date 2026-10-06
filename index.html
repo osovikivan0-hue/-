@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1226">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Виноград">
+<title>Виноград 🍇</title>
+<link rel="icon" type="image/png" href="167241.png">
+<link rel="apple-touch-icon" href="167241.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: #0f0a1a; color: #fff; height: 100vh; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
+
+  /* ЭКРАН ВХОДА */
+  #auth { background: #1a1226; padding: 30px 25px; width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+  #auth .logo { width: 120px; height: 120px; margin: 0 auto 20px; display: block; }
+  #auth h1 { color: #b57edc; font-size: 36px; margin-bottom: 8px; }
+  #auth p { color: #888; margin-bottom: 30px; font-size: 14px; }
+  #auth input { width: 100%; padding: 16px; margin-bottom: 12px; background: #0f0a1a; border: 1px solid #3d2a5c; border-radius: 14px; color: #fff; font-size: 16px; }
+  #auth input:focus { outline: none; border-color: #b57edc; }
+  #auth button { width: 100%; padding: 16px; background: #7d3c98; border: none; border-radius: 14px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 5px; }
+  #auth button:active { background: #9b59b6; transform: scale(0.98); }
+  #auth .switch { margin-top: 20px; font-size: 14px; color: #888; cursor: pointer; padding: 10px; }
+  #auth .switch:active { color: #b57edc; }
+
+  /* МЕССЕНДЖЕР */
+  #messenger { display: none; width: 100%; max-width: 600px; position: relative; }
+
+  /* ЭКРАНЫ */
+  .screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #0f0a1a; transition: transform 0.3s ease; will-change: transform; }
+  .screen-chats { z-index: 1; }
+  .screen-chat { z-index: 2; transform: translateX(100%); background: #0f0a1a; }
+  .screen-chat.active { transform: translateX(0); }
+
+  /* ШАПКА */
+  .header { padding: 14px 16px; padding-top: calc(14px + env(safe-area-inset-top)); background: #1a1226; border-bottom: 1px solid #2d1f45; display: flex; align-items: center; gap: 10px; min-height: 60px; flex-shrink: 0; }
+  .header h2 { color: #b57edc; font-size: 22px; flex: 1; display: flex; align-items: center; gap: 10px; }
+  .header h2 img { width: 32px; height: 32px; }
+  .header .icon-btn { background: transparent; border: none; color: #b57edc; font-size: 22px; cursor: pointer; padding: 6px 10px; border-radius: 10px; transition: 0.2s; }
+  .header .icon-btn:active { background: #2d1f45; }
+  .header .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #7d3c98, #b57edc); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; flex-shrink: 0; }
+  .header .info { flex: 1; min-width: 0; }
+  .header .title { font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header .status { font-size: 12px; color: #6bcf7f; }
+
+  /* ПОИСК */
+  .search-bar { padding: 10px 16px; background: #1a1226; border-bottom: 1px solid #2d1f45; flex-shrink: 0; }
+  .search-bar input { width: 100%; padding: 10px 16px; background: #0f0a1a; border: 1px solid #3d2a5c; border-radius: 20px; color: #fff; font-size: 15px; }
+  .search-bar input:focus { outline: none; border-color: #b57edc; }
+
+  /* СПИСОК */
+  .chats { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .chat-item { padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #1f1530; }
+  .chat-item:active { background: #251b38; }
+  .chat-item .chat-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #7d3c98, #b57edc); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0; }
+  .chat-item .chat-info { flex: 1; min-width: 0; }
+  .chat-item .chat-name { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
+  .chat-item .chat-last { color: #777; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .section-title { padding: 12px 16px 6px; font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ПЕРЕПИСКА */
+  .messages { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 12px; display: flex; flex-direction: column; gap: 8px; background: #0f0a1a; }
+  .msg { max-width: 78%; padding: 9px 13px; border-radius: 18px; font-size: 15px; line-height: 1.35; word-wrap: break-word; animation: fadeIn 0.2s; position: relative; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.me { align-self: flex-end; background: #7d3c98; border-bottom-right-radius: 5px; }
+  .msg.other { align-self: flex-start; background: #251b38; border-bottom-left-radius: 5px; }
+  .msg .time { font-size: 10px; opacity: 0.65; margin-top: 3px; display: block; text-align: right; }
+  .msg img { max-width: 100%; border-radius: 12px; margin-top: 4px; display: block; }
+  .msg .sticker { font-size: 56px; line-height: 1; padding: 4px; }
+  .msg .sticker-msg { width: 140px; height: 140px; object-fit: contain; display: block; margin-top: 4px; }
+
+  /* ПАНЕЛЬ СТИКЕРОВ */
+  .emoji-panel { display: none; padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); background: #1a1226; border-top: 1px solid #2d1f45; max-height: 45vh; overflow-y: auto; flex-shrink: 0; }
+  .emoji-panel.open { display: block; }
+  .sticker-row { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid #2d1f45; }
+  .sticker-btn { width: 70px; height: 70px; object-fit: contain; cursor: pointer; border-radius: 12px; padding: 4px; transition: 0.15s; background: #0f0a1a; border: 1px solid #2d1f45; }
+  .sticker-btn:active { transform: scale(0.9); background: #2d1f45; }
+  .emoji-row { display: flex; flex-wrap: wrap; gap: 4px; }
+  .emoji-row span { font-size: 30px; cursor: pointer; padding: 6px; border-radius: 10px; transition: 0.15s; user-select: none; }
+  .emoji-row span:active { background: #2d1f45; transform: scale(0.9); }
+
+  /* ВВОД */
+  .input-area { padding: 10px 12px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); background: #1a1226; border-top: 1px solid #2d1f45; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .input-area .icon-btn { background: transparent; border: none; color: #b57edc; font-size: 24px; cursor: pointer; padding: 6px; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.15s; }
+  .input-area .icon-btn:active { background: #2d1f45; transform: scale(0.9); }
+  .input-area input[type="text"] { flex: 1; padding: 12px 16px; background: #0f0a1a; border: 1px solid #3d2a5c; border-radius: 22px; color: #fff; font-size: 16px; min-width: 0; }
+  .input-area input[type="text"]:focus { outline: none; border-color: #b57edc; }
+  .input-area .send { background: #7d3c98; border: none; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; cursor: pointer; flex-shrink: 0; transition: 0.15s; }
+  .input-area .send:active { background: #9b59b6; transform: scale(0.92); }
+
+  .empty { color: #555; text-align: center; margin-top: 40px; padding: 20px; font-size: 15px; }
+  .empty .big { font-size: 60px; margin-bottom: 12px; opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<!-- ЭКРАН ВХОДА -->
+<div id="auth">
+  <img src="167241.png" alt="Виноград" class="logo">
+  <h1>Виноград</h1>
+  <p id="auth-sub">Добро пожаловать 🍇</p>
+  <input type="text" id="username" placeholder="Твоё имя" autocomplete="off">
+  <input type="password" id="password" placeholder="Пароль" autocomplete="off">
+  <button onclick="authAction()" id="auth-btn">Войти</button>
+  <div class="switch" onclick="toggleMode()" id="auth-switch">Нет аккаунта? Зарегистрироваться</div>
+</div>
+
+<!-- МЕССЕНДЖЕР -->
+<div id="messenger">
+
+  <!-- ЭКРАН 1: СПИСОК ЛЮДЕЙ -->
+  <div class="screen screen-chats">
+    <div class="header">
+      <h2><img src="167241.png" alt="🍇"> Виноград</h2>
+      <button class="icon-btn" onclick="logout()" title="Выйти">⎋</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍 Поиск людей..." oninput="filterUsers()">
+    </div>
+    <div class="chats" id="chats">
+      <div class="section-title">Люди в Винограде</div>
+      <div id="user-list"></div>
+    </div>
+  </div>
+
+  <!-- ЭКРАН 2: ПЕРЕПИСКА -->
+  <div class="screen screen-chat" id="screen-chat">
+    <div class="header">
+      <button class="icon-btn" onclick="closeChat()">←</button>
+      <div class="avatar" id="chat-avatar">?</div>
+      <div class="info">
+        <div class="title" id="chat-title">Чат</div>
+        <div class="status" id="chat-status">онлайн-чат</div>
+      </div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="emoji-panel" id="emoji-panel"></div>
+
+    <div class="input-area">
+      <button class="icon-btn" onclick="toggleEmoji()" title="Стикеры">😊</button>
+      <button class="icon-btn" onclick="document.getElementById('file-input').click()" title="Фото">📎</button>
+      <input type="file" id="file-input" accept="image/*" style="display:none" onchange="sendPhoto(event)">
+      <input type="text" id="msg-input" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMsg()">
+      <button class="send" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ПОДКЛЮЧЕНИЕ SUPABASE -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  const SUPABASE_URL = 'ВСТАВЬ_СЮДА_PROJECT_URL';
+  const SUPABASE_KEY = 'sb_publishable_tqd7rDO62mn0bYeE6WW4cw_jcg16fIE';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  window.supabase = supabase;
+
+  // Сообщаем основному скрипту, что Supabase готов
+  window.dispatchEvent(new Event('supabase-ready'));
+</script>
+
+<script>
+// ============ ДАННЫЕ ============
+let mode = 'login';
+let currentUser = null;
+let currentChat = null;
+let allUsers = [];
+let messages = {};
+let realtimeChannel = null;
+
+const STICKERS = [
+  { type: 'image', src: 'sticker1.png', name: 'ИМБА' }
+];
+
+const EMOJIS = ['😊','😂','🥰','😎','🤔','😴','😭','😡','👍','👎','❤️','🔥','✨','🎉','🍇','🍷','🍕','☕','🌙','⭐','💬','🙌','🤝','💪','😉','😇','🤩','🥳','😔','🤯','😅','🙃','😏','🤗','🤫'];
+
+// ============ АВТОРИЗАЦИЯ ============
+function toggleMode() {
+  mode = mode === 'login' ? 'register' : 'login';
+  document.getElementById('auth-btn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
+  document.getElementById('auth-switch').textContent = mode === 'login'
+    ? 'Нет аккаунта? Зарегистрироваться'
+    : 'Уже есть аккаунт? Войти';
+}
+
+async function authAction() {
+  const name = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  if (!name || !pass) return alert('Заполни все поля');
+
+  const sb = window.supabase;
+
+  if (mode === 'register') {
+    // Проверяем, нет ли такого имени
+    const { data: existing } = await sb.from('users').select('username').eq('username', name);
+    if (existing && existing.length > 0) return alert('Такое имя уже занято');
+
+    const { error } = await sb.from('users').insert({ username: name, password: pass });
+    if (error) return alert('Ошибка: ' + error.message);
+
+    alert('Аккаунт создан! Теперь войди.');
+    toggleMode();
+  } else {
+    const { data, error } = await sb.from('users').select('*').eq('username', name);
+    if (error) return alert('Ошибка: ' + error.message);
+    if (!data || data.length === 0) return alert('Пользователь не найден');
+    if (data[0].password !== pass) return alert('Неверный пароль');
+    login(name);
+  }
+}
+
+function login(name) {
+  currentUser = name;
+  localStorage.setItem('vg_current', name);
+  document.getElementById('auth').style.display = 'none';
+  document.getElementById('messenger').style.display = 'block';
+  document.getElementById('messenger').style.height = '100vh';
+  document.getElementById('messenger').style.height = '100dvh';
+  buildEmojiPanel();
+  loadUsers();
+}
+
+function logout() {
+  if (!confirm('Выйти из Винограда?')) return;
+  localStorage.removeItem('vg_current');
+  location.reload();
+}
+
+// ============ СПИСОК ПОЛЬЗОВАТЕЛЕЙ ============
+async function loadUsers() {
+  const sb = window.supabase;
+  const { data, error } = await sb.from('users').select('username').order('username');
+  if (error) return console.error(error);
+  allUsers = (data || []).map(u => u.username).filter(u => u !== currentUser);
+  renderUserList();
+
+  // Подписываемся на изменения в users (кто-то новый зарегистрировался)
+  sb.channel('users-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => {
+      loadUsers();
+    })
+    .subscribe();
+}
+
+function filterUsers() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  renderUserList(q);
+}
+
+function renderUserList(query = '') {
+  const el = document.getElementById('user-list');
+  const filtered = query
+    ? allUsers.filter(u => u.toLowerCase().includes(query))
+    : allUsers;
+
+  if (filtered.length === 0) {
+    el.innerHTML = `<div class="empty"><div class="big">🔍</div>${query ? 'Никого не нашли' : 'Пока никого нет'}</div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.map(name => `
+    <div class="chat-item" onclick="openChat('${name.replace(/'/g, "\\'")}')">
+      <div class="chat-avatar">${name[0].toUpperCase()}</div>
+      <div class="chat-info">
+        <div class="chat-name">${name}</div>
+        <div class="chat-last">нажми, чтобы написать</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ ЧАТЫ ============
+function getChatId(user1, user2) {
+  // Личный чат — id получается из двух имён в алфавитном порядке
+  return 'dm_' + [user1, user2].sort().join('_');
+}
+
+function openChat(otherUser) {
+  currentChat = getChatId(currentUser, otherUser);
+  document.getElementById('chat-title').textContent = otherUser;
+  document.getElementById('chat-avatar').textContent = otherUser[0].toUpperCase();
+  document.getElementById('chat-status').textContent = 'личный чат';
+  document.getElementById('screen-chat').classList.add('active');
+  document.getElementById('emoji-panel').classList.remove('open');
+
+  loadMessages();
+  subscribeToMessages();
+}
+
+function closeChat() {
+  document.getElementById('screen-chat').classList.remove('active');
+  document.getElementById('emoji-panel').classList.remove('open');
+  if (realtimeChannel) {
+    window.supabase.removeChannel(realtimeChannel);
+    realtimeChannel = null;
+  }
+  currentChat = null;
+}
+
+// ============ СООБЩЕНИЯ ============
+async function loadMessages() {
+  const sb = window.supabase;
+  const { data, error } = await sb
+    .from('messages')
+    .select('*')
+    .eq('chat_id', currentChat)
+    .order('created_at', { ascending: true });
+
+  if (error) return console.error(error);
+  messages[currentChat] = data || [];
+  renderMessages();
+}
+
+function subscribeToMessages() {
+  const sb = window.supabase;
+  if (realtimeChannel) sb.removeChannel(realtimeChannel);
+
+  realtimeChannel = sb.channel('chat-' + currentChat)
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${currentChat}` },
+      payload => {
+        if (!messages[currentChat]) messages[currentChat] = [];
+        // Проверяем, нет ли уже такого сообщения
+        if (!messages[currentChat].some(m => m.id === payload.new.id)) {
+          messages[currentChat].push(payload.new);
+          renderMessages();
+        }
+      })
+    .subscribe();
+}
+
+function renderMessages() {
+  const el = document.getElementById('messages');
+  const msgs = messages[currentChat] || [];
+  if (!msgs.length) {
+    el.innerHTML = '<div class="empty"><div class="big">💬</div>Пока пусто.<br>Напиши первым!</div>';
+    return;
+  }
+  el.innerHTML = msgs.map(m => {
+    const isMe = m.sender === currentUser;
+    let content = '';
+    if (m.type === 'sticker') content = `<div class="sticker">${escapeHtml(m.content)}</div>`;
+    else if (m.type === 'sticker-image') content = `<img src="${m.content}" class="sticker-msg" alt="sticker">`;
+    else if (m.type === 'photo') content = `<img src="${m.content}" alt="photo">`;
+    else content = escapeHtml(m.content);
+    const time = new Date(m.created_at).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+    return `<div class="msg ${isMe ? 'me' : 'other'}">${content}<span class="time">${time}</span></div>`;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function escapeHtml(t) {
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+
+async function sendMsg() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || !currentChat) return;
+  input.value = '';
+  await addMessage(text, 'text');
+}
+
+async function sendSticker(emoji) {
+  if (!currentChat) return;
+  await addMessage(emoji, 'sticker');
+  document.getElementById('emoji-panel').classList.remove('open');
+}
+
+async function sendStickerImg(index) {
+  if (!currentChat) return;
+  const sticker = STICKERS[index];
+  await addMessage(sticker.src, 'sticker-image');
+  document.getElementById('emoji-panel').classList.remove('open');
+}
+
+function sendPhoto(event) {
+  const file = event.target.files[0];
+  if (!file || !currentChat) return;
+  if (file.size > 500000) return alert('Фото больше 500 КБ. Пока поддерживаем только маленькие.');
+  const reader = new FileReader();
+  reader.onload = async e => {
+    await addMessage(e.target.result, 'photo');
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+async function addMessage(content, type) {
+  const sb = window.supabase;
+  const { error } = await sb.from('messages').insert({
+    chat_id: currentChat,
+    sender: currentUser,
+    content: content,
+    type: type
+  });
+  if (error) console.error(error);
+}
+
+// ============ ЭМОДЗИ И СТИКЕРЫ ============
+function buildEmojiPanel() {
+  const el = document.getElementById('emoji-panel');
+  const stickersHtml = STICKERS.map((s, i) =>
+    `<img src="${s.src}" class="sticker-btn" onclick="sendStickerImg(${i})" alt="${s.name}">`
+  ).join('');
+  const emojisHtml = EMOJIS.map(e => `<span onclick="sendSticker('${e}')">${e}</span>`).join('');
+  el.innerHTML = `<div class="sticker-row">${stickersHtml}</div><div class="emoji-row">${emojisHtml}</div>`;
+}
+
+function toggleEmoji() {
+  document.getElementById('emoji-panel').classList.toggle('open');
+}
+
+// ============ СВАЙП НАЗАД ============
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (touchStartX < 50 && dx > 80 && Math.abs(dy) < 60) {
+    if (document.getElementById('screen-chat').classList.contains('active')) closeChat();
+  }
+}, { passive: true });
+
+// ============ СТАРТ ============
+window.addEventListener('supabase-ready', () => {
+  const saved = localStorage.getItem('vg_current');
+  if (saved) login(saved);
+});
+</script>
+</body>
+  </html>
