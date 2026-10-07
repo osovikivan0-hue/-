@@ -15,16 +15,22 @@
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: #0f0a1a; color: #fff; height: 100vh; height: 100dvh; overflow: hidden; display: flex; justify-content: center; }
 
-  #auth { background: #1a1226; padding: 30px 25px; width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
-  #auth .logo { width: 120px; height: 120px; margin: 0 auto 20px; display: block; }
-  #auth h1 { color: #b57edc; font-size: 36px; margin-bottom: 8px; }
-  #auth p { color: #888; margin-bottom: 30px; font-size: 14px; }
-  #auth input { width: 100%; padding: 16px; margin-bottom: 12px; background: #0f0a1a; border: 1px solid #3d2a5c; border-radius: 14px; color: #fff; font-size: 16px; }
+  #auth { background: #1a1226; padding: 25px 25px; width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+  #auth h1 { color: #b57edc; font-size: 32px; margin-bottom: 6px; }
+  #auth p { color: #888; margin-bottom: 18px; font-size: 14px; }
+
+  .avatar-picker { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; }
+  .avatar-picker img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #7d3c98; margin-bottom: 10px; background: #0f0a1a; }
+  .avatar-actions { display: flex; gap: 8px; }
+  .avatar-actions button { background: #2d1f45; color: #b57edc; border: none; border-radius: 10px; padding: 8px 14px; font-size: 13px; cursor: pointer; transition: 0.15s; }
+  .avatar-actions button:active { background: #3d2a5c; transform: scale(0.96); }
+
+  #auth input { width: 100%; padding: 14px; margin-bottom: 10px; background: #0f0a1a; border: 1px solid #3d2a5c; border-radius: 14px; color: #fff; font-size: 16px; }
   #auth input:focus { outline: none; border-color: #b57edc; }
-  #auth button { width: 100%; padding: 16px; background: #7d3c98; border: none; border-radius: 14px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 5px; }
-  #auth button:active { background: #9b59b6; transform: scale(0.98); }
-  #auth button:disabled { background: #555; cursor: wait; }
-  #auth .switch { margin-top: 20px; font-size: 14px; color: #888; cursor: pointer; padding: 10px; }
+  #auth button.main-btn { width: 100%; padding: 15px; background: #7d3c98; border: none; border-radius: 14px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 5px; }
+  #auth button.main-btn:active { background: #9b59b6; transform: scale(0.98); }
+  #auth button.main-btn:disabled { background: #555; cursor: wait; }
+  #auth .switch { margin-top: 15px; font-size: 14px; color: #888; cursor: pointer; padding: 10px; }
   #auth .switch:active { color: #b57edc; }
 
   #messenger { display: none; width: 100%; max-width: 600px; position: relative; }
@@ -36,10 +42,10 @@
 
   .header { padding: 14px 16px; padding-top: calc(14px + env(safe-area-inset-top)); background: #1a1226; border-bottom: 1px solid #2d1f45; display: flex; align-items: center; gap: 10px; min-height: 60px; flex-shrink: 0; }
   .header h2 { color: #b57edc; font-size: 22px; flex: 1; display: flex; align-items: center; gap: 10px; }
-  .header h2 img { width: 32px; height: 32px; }
   .header .icon-btn { background: transparent; border: none; color: #b57edc; font-size: 22px; cursor: pointer; padding: 6px 10px; border-radius: 10px; transition: 0.2s; }
   .header .icon-btn:active { background: #2d1f45; }
-  .header .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #7d3c98, #b57edc); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; flex-shrink: 0; }
+  .header .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #7d3c98, #b57edc); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; flex-shrink: 0; overflow: hidden; }
+  .header .avatar img { width: 100%; height: 100%; object-fit: cover; }
   .header .info { flex: 1; min-width: 0; }
   .header .title { font-weight: 600; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .header .status { font-size: 12px; color: #6bcf7f; }
@@ -51,7 +57,8 @@
   .chats { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .chat-item { padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid #1f1530; }
   .chat-item:active { background: #251b38; }
-  .chat-item .chat-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #7d3c98, #b57edc); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0; }
+  .chat-item .chat-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #7d3c98, #b57edc); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0; overflow: hidden; }
+  .chat-item .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .chat-item .chat-info { flex: 1; min-width: 0; }
   .chat-item .chat-name { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
   .chat-item .chat-last { color: #777; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -87,25 +94,40 @@
 
   .empty { color: #555; text-align: center; margin-top: 40px; padding: 20px; font-size: 15px; }
   .empty .big { font-size: 60px; margin-bottom: 12px; opacity: 0.4; }
+
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #7d3c98; color: #fff; padding: 12px 22px; border-radius: 25px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 9999; }
+  #toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 
+<!-- ЭКРАН ВХОДА -->
 <div id="auth">
-  <img src="167241.png" alt="Виноград" class="logo">
-  <h1>Виноград</h1>
-  <p id="auth-sub">Добро пожаловать 🍇</p>
-  <input type="text" id="username" placeholder="Твоё имя" autocomplete="off">
+  <h1>🍇 Виноград</h1>
+  <p id="auth-sub">Добро пожаловать</p>
+
+  <div class="avatar-picker">
+    <img id="avatar-preview" src="167241.png" alt="аватар">
+    <div class="avatar-actions">
+      <button type="button" onclick="document.getElementById('avatar-input').click()">📷 Выбрать</button>
+      <button type="button" onclick="useDefaultAvatar()">🍇 Виноград</button>
+    </div>
+    <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="pickAvatar(event)">
+  </div>
+
+  <input type="text" id="username" placeholder="Имя" autocomplete="off">
+  <input type="text" id="surname" placeholder="Фамилия (чтобы отличить тёзок)" autocomplete="off">
   <input type="password" id="password" placeholder="Пароль" autocomplete="off">
-  <button onclick="authAction()" id="auth-btn">Войти</button>
+  <button class="main-btn" onclick="authAction()" id="auth-btn">Войти</button>
   <div class="switch" onclick="toggleMode()" id="auth-switch">Нет аккаунта? Зарегистрироваться</div>
 </div>
 
+<!-- МЕССЕНДЖЕР -->
 <div id="messenger">
 
   <div class="screen screen-chats">
     <div class="header">
-      <h2><img src="167241.png" alt="🍇"> Виноград</h2>
+      <h2>🍇 Виноград</h2>
       <button class="icon-btn" onclick="logout()" title="Выйти">⎋</button>
     </div>
     <div class="search-bar">
@@ -128,12 +150,11 @@
     </div>
 
     <div class="messages" id="messages"></div>
-
     <div class="emoji-panel" id="emoji-panel"></div>
 
     <div class="input-area">
-      <button class="icon-btn" onclick="toggleEmoji()" title="Стикеры">😊</button>
-      <button class="icon-btn" onclick="document.getElementById('file-input').click()" title="Фото">📎</button>
+      <button class="icon-btn" onclick="toggleEmoji()">😊</button>
+      <button class="icon-btn" onclick="document.getElementById('file-input').click()">📎</button>
       <input type="file" id="file-input" accept="image/*" style="display:none" onchange="sendPhoto(event)">
       <input type="text" id="msg-input" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMsg()">
       <button class="send" onclick="sendMsg()">➤</button>
@@ -142,15 +163,16 @@
 
 </div>
 
+<div id="toast"></div>
+
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
   const SUPABASE_URL = 'https://mcdxtrpivjjovbshtbis.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jZHh0cnBpdmpqb3Zic2h0YmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzMDUxMDAsImV4cCI6MjEwNjg4MTEwMH0.5AkQgOlwL4fWMV29ScyJaFpU9n9k5nVp-X09xmbY8Nc';
 
-  let supabase = null;
   try {
-    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     window.supabase = supabase;
     console.log('✅ Supabase подключён');
     window.dispatchEvent(new Event('supabase-ready'));
@@ -161,6 +183,7 @@
 </script>
 
 <script>
+// ============ СОСТОЯНИЕ ============
 let mode = 'login';
 let currentUser = null;
 let currentChat = null;
@@ -169,6 +192,7 @@ let allUsers = [];
 let messages = {};
 let realtimeChannel = null;
 let usersChannel = null;
+let selectedAvatar = null;
 
 const STICKERS = [
   { type: 'image', src: 'sticker1.png', name: 'ИМБА' }
@@ -176,23 +200,75 @@ const STICKERS = [
 
 const EMOJIS = ['😊','😂','🥰','😎','🤔','😴','😭','😡','👍','👎','❤️','🔥','✨','🎉','🍇','🍷','🍕','☕','🌙','⭐','💬','🙌','🤝','💪','😉','😇','🤩','🥳','😔','🤯','😅','🙃','😏','🤗','🤫'];
 
+// ============ УТИЛИТЫ ============
+function showToast(text) {
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============ АВАТАРКИ ============
+function pickAvatar(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 200000) {
+    alert('Аватар больше 200 КБ. Выбери картинку поменьше.');
+    event.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    selectedAvatar = e.target.result;
+    document.getElementById('avatar-preview').src = selectedAvatar;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function useDefaultAvatar() {
+  selectedAvatar = null;
+  document.getElementById('avatar-preview').src = '167241.png';
+}
+
+function getAvatarHtml(name, avatar) {
+  if (avatar) {
+    return `<img src="${avatar}" alt="${name}">`;
+  }
+  return name[0].toUpperCase();
+}
+
+// ============ АВТОРИЗАЦИЯ ============
 function toggleMode() {
   mode = mode === 'login' ? 'register' : 'login';
   document.getElementById('auth-btn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
   document.getElementById('auth-switch').textContent = mode === 'login'
     ? 'Нет аккаунта? Зарегистрироваться'
     : 'Уже есть аккаунт? Войти';
+
+  const surnameInput = document.getElementById('surname');
+  const avatarPicker = document.querySelector('.avatar-picker');
+  if (mode === 'login') {
+    surnameInput.style.display = 'none';
+    avatarPicker.style.display = 'none';
+  } else {
+    surnameInput.style.display = 'block';
+    avatarPicker.style.display = 'flex';
+  }
 }
 
 async function authAction() {
   const btn = document.getElementById('auth-btn');
-  const name = document.getElementById('username').value.trim();
+  const firstName = document.getElementById('username').value.trim();
+  const surname = document.getElementById('surname')?.value.trim() || '';
   const pass = document.getElementById('password').value.trim();
 
-  if (!name || !pass) return alert('Заполни все поля');
+  const name = mode === 'register' && surname ? `${firstName} ${surname}` : firstName;
+
+  if (!firstName || !pass) return alert('Заполни имя и пароль');
 
   if (!window.supabase) {
-    return alert('Supabase не подключён. Проверь URL и ключ в коде.');
+    return alert('Supabase не подключён. Проверь URL и ключ.');
   }
 
   const sb = window.supabase;
@@ -208,14 +284,19 @@ async function authAction() {
       if (checkErr) throw new Error('Ошибка проверки: ' + checkErr.message);
       if (existing && existing.length > 0) {
         btn.disabled = false; btn.textContent = originalText;
-        return alert('Такое имя уже занято');
+        return alert('Такое имя уже занято. Попробуй добавить фамилию или другое имя.');
       }
 
-      const { error } = await sb.from('users').insert({ username: name, password: pass });
+      const { error } = await sb.from('users').insert({
+        username: name,
+        password: pass,
+        avatar: selectedAvatar
+      });
       if (error) throw new Error('Ошибка регистрации: ' + error.message);
 
-      alert('Аккаунт создан! Теперь войди.');
+      alert(`Аккаунт "${name}" создан! Теперь войди.`);
       toggleMode();
+      document.getElementById('password').value = '';
     } else {
       const { data, error } = await sb
         .from('users').select('*').eq('username', name);
@@ -258,12 +339,13 @@ function logout() {
   location.reload();
 }
 
+// ============ СПИСОК ПОЛЬЗОВАТЕЛЕЙ ============
 async function loadUsers() {
   const sb = window.supabase;
   try {
-    const { data, error } = await sb.from('users').select('username').order('username');
+    const { data, error } = await sb.from('users').select('username, avatar').order('username');
     if (error) throw error;
-    allUsers = (data || []).map(u => u.username).filter(u => u !== currentUser);
+    allUsers = (data || []).filter(u => u.username !== currentUser);
     renderUserList();
   } catch (e) {
     console.error('Ошибка загрузки пользователей:', e);
@@ -286,7 +368,7 @@ function filterUsers() {
 function renderUserList(query = '') {
   const el = document.getElementById('user-list');
   const filtered = query
-    ? allUsers.filter(u => u.toLowerCase().includes(query))
+    ? allUsers.filter(u => u.username.toLowerCase().includes(query))
     : allUsers;
 
   if (filtered.length === 0) {
@@ -294,17 +376,22 @@ function renderUserList(query = '') {
     return;
   }
 
-  el.innerHTML = filtered.map(name => `
-    <div class="chat-item" onclick="openChat('${name.replace(/'/g, "\\'")}')">
-      <div class="chat-avatar">${name[0].toUpperCase()}</div>
-      <div class="chat-info">
-        <div class="chat-name">${name}</div>
-        <div class="chat-last">нажми, чтобы написать</div>
+  el.innerHTML = filtered.map(u => {
+    const name = u.username;
+    const safeName = name.replace(/'/g, "\\'");
+    return `
+      <div class="chat-item" onclick="openChat('${safeName}')">
+        <div class="chat-avatar">${getAvatarHtml(name, u.avatar)}</div>
+        <div class="chat-info">
+          <div class="chat-name">${name}</div>
+          <div class="chat-last">нажми, чтобы написать</div>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
+// ============ ЧАТЫ ============
 function getChatId(user1, user2) {
   return 'dm_' + [user1, user2].sort().join('_');
 }
@@ -312,8 +399,10 @@ function getChatId(user1, user2) {
 function openChat(otherUser) {
   currentChatUser = otherUser;
   currentChat = getChatId(currentUser, otherUser);
+
   document.getElementById('chat-title').textContent = otherUser;
-  document.getElementById('chat-avatar').textContent = otherUser[0].toUpperCase();
+  const otherData = allUsers.find(u => u.username === otherUser);
+  document.getElementById('chat-avatar').innerHTML = getAvatarHtml(otherUser, otherData?.avatar);
   document.getElementById('chat-status').textContent = 'личный чат';
   document.getElementById('screen-chat').classList.add('active');
   document.getElementById('emoji-panel').classList.remove('open');
@@ -333,6 +422,7 @@ function closeChat() {
   currentChatUser = null;
 }
 
+// ============ СООБЩЕНИЯ ============
 async function loadMessages() {
   const sb = window.supabase;
   try {
@@ -430,9 +520,13 @@ async function addMessage(content, type) {
     content: content,
     type: type
   });
-  if (error) console.error('Ошибка отправки:', error);
+  if (error) {
+    console.error('Ошибка отправки:', error);
+    showToast('Ошибка: ' + error.message);
+  }
 }
 
+// ============ ЭМОДЗИ И СТИКЕРЫ ============
 function buildEmojiPanel() {
   const el = document.getElementById('emoji-panel');
   const stickersHtml = STICKERS.map((s, i) =>
@@ -446,6 +540,7 @@ function toggleEmoji() {
   document.getElementById('emoji-panel').classList.toggle('open');
 }
 
+// ============ СВАЙП НАЗАД ============
 let touchStartX = 0, touchStartY = 0;
 document.addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
@@ -460,6 +555,7 @@ document.addEventListener('touchend', e => {
   }
 }, { passive: true });
 
+// ============ СТАРТ ============
 window.addEventListener('supabase-ready', () => {
   const saved = localStorage.getItem('vg_current');
   if (saved) login(saved);
