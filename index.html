@@ -39,7 +39,7 @@
   .screen-chats { z-index: 1; }
   .screen-chat { z-index: 2; transform: translateX(100%); }
   .screen-chat.active { transform: translateX(0); }
-  .screen-settings { z-index: 3; transform: translateX(100%); background: #0f0a1a; }
+  .screen-settings { z-index: 3; transform: translateX(100%); }
   .screen-settings.active { transform: translateX(0); }
 
   .header { padding: 14px 16px; padding-top: calc(14px + env(safe-area-inset-top)); background: #1a1226; border-bottom: 1px solid #2d1f45; display: flex; align-items: center; gap: 10px; min-height: 60px; flex-shrink: 0; }
@@ -97,7 +97,6 @@
   .empty { color: #555; text-align: center; margin-top: 40px; padding: 20px; font-size: 15px; }
   .empty .big { font-size: 60px; margin-bottom: 12px; opacity: 0.4; }
 
-  /* НАСТРОЙКИ */
   .settings-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
   .settings-avatar { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid #7d3c98; margin-bottom: 16px; background: #0f0a1a; }
   .settings-name { font-size: 22px; font-weight: 700; margin-bottom: 24px; color: #fff; text-align: center; }
@@ -114,7 +113,6 @@
 </head>
 <body>
 
-<!-- ЭКРАН ВХОДА -->
 <div id="auth">
   <h1>🍇 Виноград</h1>
   <p id="auth-sub">Добро пожаловать</p>
@@ -135,10 +133,8 @@
   <div class="switch" onclick="toggleMode()" id="auth-switch">Нет аккаунта? Зарегистрироваться</div>
 </div>
 
-<!-- МЕССЕНДЖЕР -->
 <div id="messenger">
 
-  <!-- ЭКРАН 1: СПИСОК ЧАТОВ -->
   <div class="screen screen-chats">
     <div class="header">
       <h2>🍇 Виноград</h2>
@@ -153,7 +149,6 @@
     </div>
   </div>
 
-  <!-- ЭКРАН 2: ЧАТ -->
   <div class="screen screen-chat" id="screen-chat">
     <div class="header">
       <button class="icon-btn" onclick="closeChat()">←</button>
@@ -176,7 +171,6 @@
     </div>
   </div>
 
-  <!-- ЭКРАН 3: НАСТРОЙКИ -->
   <div class="screen screen-settings" id="screen-settings">
     <div class="header">
       <button class="icon-btn" onclick="closeSettings()">←</button>
@@ -294,7 +288,6 @@ function setDefaultAvatarSettings() {
 }
 
 function openSettings() {
-  // Загружаем текущую аватарку
   const sb = window.supabase;
   sb.from('users').select('avatar, username').eq('username', currentUser).then(({ data }) => {
     if (data && data[0]) {
@@ -540,21 +533,33 @@ async function loadMessages() {
   }
 }
 
+// ⚡ REALTIME БЕЗ ФИЛЬТРА — кириллица в chat_id не мешает
 function subscribeToMessages() {
   const sb = window.supabase;
   if (realtimeChannel) sb.removeChannel(realtimeChannel);
 
   realtimeChannel = sb.channel('chat-' + currentChat)
     .on('postgres_changes',
-      { event: 'INSERT', schema: 'public', table: 'messages', filter: `chat_id=eq.${currentChat}` },
+      { event: 'INSERT', schema: 'public', table: 'messages' },
       payload => {
+        const msg = payload.new;
+        // Фильтруем в коде — надёжнее, чем в filter
+        if (msg.chat_id !== currentChat) return;
+
         if (!messages[currentChat]) messages[currentChat] = [];
-        if (!messages[currentChat].some(m => m.id === payload.new.id)) {
-          messages[currentChat].push(payload.new);
+        if (!messages[currentChat].some(m => m.id === msg.id)) {
+          messages[currentChat].push(msg);
           renderMessages();
         }
       })
-    .subscribe();
+    .subscribe(status => {
+      console.log('Realtime status:', status);
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        setTimeout(() => {
+          if (currentChat) subscribeToMessages();
+        }, 3000);
+      }
+    });
 }
 
 function renderMessages() {
@@ -641,6 +646,17 @@ function buildEmojiPanel() {
 function toggleEmoji() {
   document.getElementById('emoji-panel').classList.toggle('open');
 }
+
+// ============ ПЕРЕПОДКЛЮЧЕНИЕ REALTIME ============
+setInterval(() => {
+  if (currentChat && realtimeChannel) {
+    const state = realtimeChannel.state;
+    if (state !== 'joined') {
+      console.log('Realtime переподключение, статус был:', state);
+      subscribeToMessages();
+    }
+  }
+}, 30000);
 
 // ============ СВАЙП НАЗАД ============
 let touchStartX = 0, touchStartY = 0;
