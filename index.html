@@ -126,8 +126,7 @@
     <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="pickAvatar(event)">
   </div>
 
-  <input type="text" id="username" placeholder="Имя" autocomplete="off">
-  <input type="text" id="surname" placeholder="Фамилия (чтобы отличить тёзок)" autocomplete="off">
+  <input type="text" id="username" placeholder="Твоё имя" autocomplete="off">
   <input type="password" id="password" placeholder="Пароль" autocomplete="off">
   <button class="main-btn" onclick="authAction()" id="auth-btn">Войти</button>
   <div class="switch" onclick="toggleMode()" id="auth-switch">Нет аккаунта? Зарегистрироваться</div>
@@ -241,7 +240,7 @@ function showToast(text) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ============ АВАТАРКИ (РЕГИСТРАЦИЯ) ============
+// ============ АВАТАРКИ ============
 function pickAvatar(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -264,7 +263,6 @@ function useDefaultAvatar() {
   document.getElementById('avatar-preview').src = '167241.png';
 }
 
-// ============ АВАТАРКИ (НАСТРОЙКИ) ============
 function pickSettingsAvatar(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -334,26 +332,20 @@ function toggleMode() {
     ? 'Нет аккаунта? Зарегистрироваться'
     : 'Уже есть аккаунт? Войти';
 
-  const surnameInput = document.getElementById('surname');
   const avatarPicker = document.querySelector('.avatar-picker');
   if (mode === 'login') {
-    surnameInput.style.display = 'none';
     avatarPicker.style.display = 'none';
   } else {
-    surnameInput.style.display = 'block';
     avatarPicker.style.display = 'flex';
   }
 }
 
 async function authAction() {
   const btn = document.getElementById('auth-btn');
-  const firstName = document.getElementById('username').value.trim();
-  const surname = document.getElementById('surname')?.value.trim() || '';
+  const name = document.getElementById('username').value.trim();
   const pass = document.getElementById('password').value.trim();
 
-  const name = mode === 'register' && surname ? `${firstName} ${surname}` : firstName;
-
-  if (!firstName || !pass) return alert('Заполни имя и пароль');
+  if (!name || !pass) return alert('Заполни имя и пароль');
 
   if (!window.supabase) {
     return alert('Supabase не подключён. Проверь URL и ключ.');
@@ -372,7 +364,7 @@ async function authAction() {
       if (checkErr) throw new Error('Ошибка проверки: ' + checkErr.message);
       if (existing && existing.length > 0) {
         btn.disabled = false; btn.textContent = originalText;
-        return alert('Такое имя уже занято. Попробуй добавить фамилию или другое имя.');
+        return alert('Такое имя уже занято. Придумай другое.');
       }
 
       const { error } = await sb.from('users').insert({
@@ -533,7 +525,6 @@ async function loadMessages() {
   }
 }
 
-// ⚡ REALTIME БЕЗ ФИЛЬТРА — кириллица в chat_id не мешает
 function subscribeToMessages() {
   const sb = window.supabase;
   if (realtimeChannel) sb.removeChannel(realtimeChannel);
@@ -543,9 +534,7 @@ function subscribeToMessages() {
       { event: 'INSERT', schema: 'public', table: 'messages' },
       payload => {
         const msg = payload.new;
-        // Фильтруем в коде — надёжнее, чем в filter
         if (msg.chat_id !== currentChat) return;
-
         if (!messages[currentChat]) messages[currentChat] = [];
         if (!messages[currentChat].some(m => m.id === msg.id)) {
           messages[currentChat].push(msg);
@@ -647,7 +636,7 @@ function toggleEmoji() {
   document.getElementById('emoji-panel').classList.toggle('open');
 }
 
-// ============ ПЕРЕПОДКЛЮЧЕНИЕ REALTIME ============
+// ============ ПЕРЕПОДКЛЮЧЕНИЕ ============
 setInterval(() => {
   if (currentChat && realtimeChannel) {
     const state = realtimeChannel.state;
