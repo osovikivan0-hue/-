@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Виноград">
-<title>Виноград 🍇 v1.1</title>
+<title>Виноград 🍇 v1.2</title>
 <link rel="icon" type="image/png" href="167241.png">
 <link rel="apple-touch-icon" href="167241.png">
 <link rel="manifest" href="manifest.json">
@@ -68,8 +68,25 @@
   .chat-item .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .chat-item .chat-avatar.group { background: linear-gradient(135deg, #2980b9, #6dd5fa); }
   .chat-item .chat-info { flex: 1; min-width: 0; }
-  .chat-item .chat-name { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
+  .chat-item .chat-name { font-weight: 600; font-size: 16px; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
   .chat-item .chat-last { color: #777; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ЗНАЧКИ */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: rgba(125, 60, 152, 0.3);
+    border: 1px solid #7d3c98;
+    transition: 0.15s;
+    user-select: none;
+  }
+  .badge:active { transform: scale(0.9); }
+  .badge-inline { font-size: 15px; padding: 1px 5px; margin-left: 4px; }
 
   .section-title { padding: 12px 16px 6px; font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
   .section-title .new-group { background: #2d1f45; color: #b57edc; border: none; padding: 4px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; text-transform: none; letter-spacing: 0; }
@@ -79,7 +96,7 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   .msg.me { align-self: flex-end; background: #7d3c98; border-bottom-right-radius: 5px; }
   .msg.other { align-self: flex-start; background: #251b38; border-bottom-left-radius: 5px; }
-  .msg .sender { font-size: 12px; font-weight: 700; color: #b57edc; margin-bottom: 3px; display: block; }
+  .msg .sender { font-size: 12px; font-weight: 700; color: #b57edc; margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
   .msg .time { font-size: 10px; opacity: 0.65; margin-top: 3px; display: block; text-align: right; }
   .msg img { max-width: 100%; border-radius: 12px; margin-top: 4px; display: block; }
   .msg .sticker { font-size: 56px; line-height: 1; padding: 4px; }
@@ -107,7 +124,8 @@
 
   .settings-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
   .settings-avatar { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid #7d3c98; margin-bottom: 16px; background: #0f0a1a; }
-  .settings-name { font-size: 22px; font-weight: 700; margin-bottom: 24px; color: #fff; text-align: center; }
+  .settings-name { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #fff; text-align: center; }
+  .settings-badges { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
   .settings-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 340px; }
   .settings-buttons button { padding: 14px; background: #2d1f45; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.15s; }
   .settings-buttons button:active { background: #3d2a5c; transform: scale(0.98); }
@@ -138,7 +156,7 @@
   .member-item { padding: 12px 0; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #1f1530; }
   .member-item .member-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #7d3c98, #b57edc); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; overflow: hidden; flex-shrink: 0; }
   .member-item .member-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .member-item .member-name { flex: 1; font-size: 15px; }
+  .member-item .member-name { flex: 1; font-size: 15px; display: flex; align-items: center; gap: 6px; }
   .member-item .member-role { font-size: 12px; color: #888; }
 
   .group-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
@@ -147,13 +165,78 @@
 
   #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #7d3c98; color: #fff; padding: 12px 22px; border-radius: 25px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 9999; }
   #toast.show { opacity: 1; }
+
+  /* МОДАЛЬНОЕ ОКНО ДЛЯ ЗНАЧКА */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: linear-gradient(160deg, #2d1f45, #1a1226);
+    border: 2px solid #7d3c98;
+    border-radius: 20px;
+    padding: 30px 25px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    animation: modalIn 0.25s;
+    box-shadow: 0 10px 40px rgba(125, 60, 152, 0.5);
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal .modal-emoji { font-size: 60px; margin-bottom: 12px; }
+  .modal .modal-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .modal .modal-text { font-size: 14px; color: #b57edc; line-height: 1.5; margin-bottom: 20px; }
+  .modal button {
+    background: #7d3c98;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .modal button:active { background: #9b59b6; }
+
+  /* ВВОД КОДА */
+  .code-input-area {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 340px;
+    margin-top: 10px;
+  }
+  .code-input-area.show { display: flex; }
+  .code-input-area input {
+    padding: 14px;
+    background: #0f0a1a;
+    border: 1px solid #3d2a5c;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .code-input-area input:focus { outline: none; border-color: #b57edc; }
 </style>
 </head>
 <body>
 
 <div id="auth">
   <h1>🍇 Виноград</h1>
-  <p id="auth-sub">Добро пожаловать в v1.1</p>
+  <p id="auth-sub">Добро пожаловать в v1.2</p>
 
   <div class="avatar-picker">
     <img id="avatar-preview" src="167241.png" alt="аватар">
@@ -224,16 +307,25 @@
     <div class="settings-content">
       <img id="settings-avatar" class="settings-avatar" src="167241.png" alt="аватар">
       <div class="settings-name" id="settings-name">Имя</div>
+      <div class="settings-badges" id="settings-badges"></div>
+
       <div class="settings-buttons">
         <button onclick="document.getElementById('settings-avatar-input').click()">📷 Выбрать аватарку</button>
         <button onclick="setDefaultAvatarSettings()">🍇 Аватарка по умолчанию</button>
         <button onclick="saveSettings()">💾 Сохранить</button>
+        <button onclick="toggleCodeInput()">🎁 Ввести код</button>
         <button id="notif-btn" onclick="enableNotifications()">🔔 Включить уведомления</button>
         <button class="danger" onclick="logout()">⎋ Выйти</button>
       </div>
+
+      <div class="code-input-area" id="code-input-area">
+        <input type="text" id="code-input" placeholder="ВВЕДИ КОД" maxlength="20">
+        <button onclick="applyCode()">Активировать</button>
+      </div>
+
       <input type="file" id="settings-avatar-input" accept="image/*" style="display:none" onchange="pickSettingsAvatar(event)">
       <p class="settings-hint">Аватарка сохранится и её увидят все в списке</p>
-      <p class="settings-version">Виноград v1.1 🍇</p>
+      <p class="settings-version">Виноград v1.2 🍇</p>
     </div>
   </div>
 
@@ -269,6 +361,16 @@
 
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ЗНАЧКА -->
+<div class="modal-overlay" id="badge-modal" onclick="closeBadgeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-emoji" id="modal-emoji">🏆</div>
+    <div class="modal-title" id="modal-title">Значок</div>
+    <div class="modal-text" id="modal-text">Описание</div>
+    <button onclick="closeBadgeModal()">Закрыть</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script type="module">
@@ -280,7 +382,7 @@
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     window.supabase = supabase;
-    console.log('✅ Supabase подключён (v1.1)');
+    console.log('✅ Supabase подключён (v1.2)');
     window.dispatchEvent(new Event('supabase-ready'));
   } catch (e) {
     console.error('❌ Ошибка Supabase:', e);
@@ -307,12 +409,112 @@ let settingsAvatar = null;
 let selectedMembers = [];
 let chatType = null;
 let notificationsEnabled = false;
+let myBadges = [];
 
 const STICKERS = [
   { type: 'image', src: 'sticker1.png', name: 'ИМБА' }
 ];
 
 const EMOJIS = ['😊','😂','🥰','😎','🤔','😴','😭','😡','👍','👎','❤️','🔥','✨','🎉','🍇','🍷','🍕','☕','🌙','⭐','💬','🙌','🤝','💪','😉','😇','🤩','🥳','😔','🤯','😅','🙃','😏','🤗','🤫'];
+
+// ============ ЗНАЧКИ ============
+// Чтобы добавить новый значок — допиши строчку в BADGE_CODES
+const BADGE_CODES = {
+  'VINOGRAD2026': {
+    id: 'supporter',
+    emoji: '🏆',
+    title: 'Поддержал в разработке',
+    text: 'Этот человек верил в Виноград с самых первых версий и поддерживал проект. Спасибо тебе! 🍇'
+  }
+};
+
+// Описание значков (по id) — для отображения
+const BADGE_INFO = {
+  'supporter': {
+    emoji: '🏆',
+    title: 'Поддержал в разработке',
+    text: 'Этот человек верил в Виноград с самых первых версий и поддерживал проект. Спасибо тебе! 🍇'
+  }
+};
+
+function getBadgesArray(badgesStr) {
+  if (!badgesStr) return [];
+  return badgesStr.split(',').map(s => s.trim()).filter(Boolean);
+}
+
+function getBadgesHtml(badgesStr, inline = false) {
+  const arr = getBadgesArray(badgesStr);
+  if (!arr.length) return '';
+  return arr.map(id => {
+    const info = BADGE_INFO[id];
+    if (!info) return '';
+    const cls = inline ? 'badge badge-inline' : 'badge';
+    return `<span class="${cls}" onclick="event.stopPropagation(); showBadgeModal('${id}')" title="${info.title}">${info.emoji}</span>`;
+  }).join('');
+}
+
+function showBadgeModal(badgeId) {
+  const info = BADGE_INFO[badgeId];
+  if (!info) return;
+  document.getElementById('modal-emoji').textContent = info.emoji;
+  document.getElementById('modal-title').textContent = info.title;
+  document.getElementById('modal-text').textContent = info.text;
+  document.getElementById('badge-modal').classList.add('show');
+}
+
+function closeBadgeModal(event) {
+  if (event && event.target !== event.currentTarget && event.target.className !== 'modal-overlay') return;
+  document.getElementById('badge-modal').classList.remove('show');
+}
+
+// ============ ВВОД КОДА ============
+function toggleCodeInput() {
+  document.getElementById('code-input-area').classList.toggle('show');
+}
+
+async function applyCode() {
+  const input = document.getElementById('code-input');
+  const code = input.value.trim().toUpperCase();
+  if (!code) return showToast('Введи код');
+
+  const badge = BADGE_CODES[code];
+  if (!badge) {
+    showToast('Неверный код ❌');
+    input.value = '';
+    return;
+  }
+
+  const currentArr = getBadgesArray(myBadges);
+  if (currentArr.includes(badge.id)) {
+    showToast('Этот значок у тебя уже есть');
+    input.value = '';
+    return;
+  }
+
+  const newBadges = [...currentArr, badge.id].join(',');
+  const sb = window.supabase;
+  const { error } = await sb.from('users')
+    .update({ badges: newBadges })
+    .eq('username', currentUser);
+
+  if (error) {
+    alert('Ошибка: ' + error.message);
+    return;
+  }
+
+  myBadges = newBadges;
+  renderMyBadges();
+  showToast(`Значок "${badge.title}" получен! ${badge.emoji}`);
+  input.value = '';
+  document.getElementById('code-input-area').classList.remove('show');
+  loadUsers();
+}
+
+function renderMyBadges() {
+  const el = document.getElementById('settings-badges');
+  if (!el) return;
+  el.innerHTML = getBadgesHtml(myBadges);
+}
 
 // ============ УТИЛИТЫ ============
 function showToast(text) {
@@ -336,17 +538,12 @@ function getAvatarHtml(name, avatar) {
 // ============ ПОДЕЛИТЬСЯ ============
 function shareApp() {
   const url = 'https://osovikivan0-hue.github.io/-/';
-  const text = `Заходи в Виноград — свой мессенджер для нашего класса! Версия 1.1 🍇\n${url}`;
+  const text = `Заходи в Виноград — свой мессенджер для нашего класса! Версия 1.2 🍇\n${url}`;
 
   if (navigator.share) {
-    navigator.share({
-      title: 'Виноград v1.1',
-      text: text,
-      url: url
-    }).catch(() => {});
+    navigator.share({ title: 'Виноград v1.2', text: text, url: url }).catch(() => {});
     return;
   }
-
   copyToClipboard(text);
 }
 
@@ -354,9 +551,7 @@ function copyToClipboard(text) {
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
       showToast('Ссылка скопирована! 🍇');
-    }).catch(() => {
-      fallbackCopy(text);
-    });
+    }).catch(() => fallbackCopy(text));
   } else {
     fallbackCopy(text);
   }
@@ -373,7 +568,7 @@ function fallbackCopy(text) {
     document.execCommand('copy');
     showToast('Ссылка скопирована! 🍇');
   } catch (e) {
-    alert('Не удалось скопировать. Вот текст:\n\n' + text);
+    alert('Не удалось скопировать:\n\n' + text);
   }
   document.body.removeChild(textarea);
 }
@@ -384,7 +579,6 @@ async function enableNotifications() {
     alert('Твой браузер не поддерживает уведомления');
     return;
   }
-
   if (Notification.permission === 'granted') {
     notificationsEnabled = true;
     updateNotificationBtn();
@@ -392,7 +586,6 @@ async function enableNotifications() {
     subscribeToNotifications();
     return;
   }
-
   const permission = await Notification.requestPermission();
   if (permission === 'granted') {
     notificationsEnabled = true;
@@ -407,7 +600,7 @@ async function enableNotifications() {
 function updateNotificationBtn() {
   const btn = document.getElementById('notif-btn');
   if (!btn) return;
-  if (Notification.permission === 'granted') {
+  if ('Notification' in window && Notification.permission === 'granted') {
     btn.textContent = '🔔 Уведомления включены';
     btn.style.background = '#2d5c2d';
   }
@@ -416,13 +609,9 @@ function updateNotificationBtn() {
 function showNotification(sender, text) {
   if (Notification.permission !== 'granted') return;
   if (!notificationsEnabled) return;
-
-  // Если окно активно — не показываем
   if (document.visibilityState === 'visible' && !document.hidden) {
-    // Если открыт не тот чат — показываем
     if (currentChatUser === sender) return;
   }
-
   try {
     const n = new Notification('Виноград 🍇', {
       body: `${sender}: ${text}`,
@@ -431,10 +620,7 @@ function showNotification(sender, text) {
       tag: 'vg-' + sender + '-' + Date.now(),
       vibrate: [200, 100, 200]
     });
-    n.onclick = () => {
-      window.focus();
-      n.close();
-    };
+    n.onclick = () => { window.focus(); n.close(); };
   } catch (e) {
     console.error('Ошибка уведомления:', e);
   }
@@ -443,37 +629,28 @@ function showNotification(sender, text) {
 function subscribeToNotifications() {
   if (notificationsChannel || !window.supabase) return;
   const sb = window.supabase;
-
   notificationsChannel = sb.channel('notifications-all')
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'messages' },
       payload => {
         const msg = payload.new;
-        // Игнорируем свои сообщения
         if (msg.sender === currentUser) return;
 
-        // Личные чаты
         if (msg.chat_id.startsWith('dm_')) {
-          // Проверяем, что этот чат — с нами
           if (!msg.chat_id.includes(currentUser)) return;
-          // Если чат открыт и это он — не показываем
           if (currentChat === msg.chat_id) return;
-          // Иначе — показываем
-          const preview = getMessagePreview(msg);
-          showNotification(msg.sender, preview);
+          showNotification(msg.sender, getMessagePreview(msg));
         }
 
-        // Группы
         if (msg.chat_id.startsWith('group_')) {
           const groupId = parseInt(msg.chat_id.replace('group_', ''));
           const myGroup = myGroups.find(g => g.id === groupId);
           if (!myGroup) return;
           if (currentChat === msg.chat_id) return;
-          const preview = getMessagePreview(msg);
-          showNotification(`${myGroup.name}: ${msg.sender}`, preview);
+          showNotification(`${myGroup.name}: ${msg.sender}`, getMessagePreview(msg));
         }
       })
-    .subscribe(status => console.log('🔔 Notif channel:', status));
+    .subscribe();
 }
 
 function getMessagePreview(msg) {
@@ -483,12 +660,12 @@ function getMessagePreview(msg) {
   return msg.content.length > 50 ? msg.content.slice(0, 50) + '…' : msg.content;
 }
 
-// ============ АВАТАРКИ (РЕГИСТРАЦИЯ) ============
+// ============ АВАТАРКИ ============
 function pickAvatar(event) {
   const file = event.target.files[0];
   if (!file) return;
   if (file.size > 200000) {
-    alert('Аватар больше 200 КБ. Выбери картинку поменьше.');
+    alert('Аватар больше 200 КБ.');
     event.target.value = '';
     return;
   }
@@ -506,12 +683,11 @@ function useDefaultAvatar() {
   document.getElementById('avatar-preview').src = '167241.png';
 }
 
-// ============ АВАТАРКИ (НАСТРОЙКИ) ============
 function pickSettingsAvatar(event) {
   const file = event.target.files[0];
   if (!file) return;
   if (file.size > 200000) {
-    alert('Аватар больше 200 КБ. Выбери картинку поменьше.');
+    alert('Аватар больше 200 КБ.');
     event.target.value = '';
     return;
   }
@@ -531,12 +707,14 @@ function setDefaultAvatarSettings() {
 
 function openSettings() {
   const sb = window.supabase;
-  sb.from('users').select('avatar, username').eq('username', currentUser).then(({ data }) => {
+  sb.from('users').select('avatar, username, badges').eq('username', currentUser).then(({ data }) => {
     if (data && data[0]) {
       const avatar = data[0].avatar || '167241.png';
       settingsAvatar = avatar;
+      myBadges = data[0].badges || '';
       document.getElementById('settings-avatar').src = avatar;
       document.getElementById('settings-name').textContent = currentUser;
+      renderMyBadges();
     }
   });
   updateNotificationBtn();
@@ -546,6 +724,7 @@ function openSettings() {
 function closeSettings() {
   document.getElementById('screen-settings').classList.remove('active');
   settingsAvatar = null;
+  document.getElementById('code-input-area').classList.remove('show');
 }
 
 async function saveSettings() {
@@ -574,11 +753,7 @@ function toggleMode() {
     ? 'Нет аккаунта? Зарегистрироваться'
     : 'Уже есть аккаунт? Войти';
   const avatarPicker = document.querySelector('.avatar-picker');
-  if (mode === 'login') {
-    avatarPicker.style.display = 'none';
-  } else {
-    avatarPicker.style.display = 'flex';
-  }
+  avatarPicker.style.display = mode === 'login' ? 'none' : 'flex';
 }
 
 async function authAction() {
@@ -600,10 +775,10 @@ async function authAction() {
       if (checkErr) throw new Error('Ошибка проверки: ' + checkErr.message);
       if (existing && existing.length > 0) {
         btn.disabled = false; btn.textContent = originalText;
-        return alert('Такое имя уже занято. Придумай другое.');
+        return alert('Такое имя уже занято.');
       }
       const { error } = await sb.from('users').insert({
-        username: name, password: pass, avatar: selectedAvatar
+        username: name, password: pass, avatar: selectedAvatar, badges: ''
       });
       if (error) throw new Error('Ошибка регистрации: ' + error.message);
       alert(`Аккаунт "${name}" создан! Теперь войди.`);
@@ -643,7 +818,6 @@ function login(name) {
   loadMyGroups();
   subscribeGroupsChanges();
 
-  // Подписываемся на уведомления если уже разрешены
   if ('Notification' in window && Notification.permission === 'granted') {
     notificationsEnabled = true;
     subscribeToNotifications();
@@ -660,7 +834,7 @@ function logout() {
 async function loadUsers() {
   const sb = window.supabase;
   try {
-    const { data, error } = await sb.from('users').select('username, avatar').order('username');
+    const { data, error } = await sb.from('users').select('username, avatar, badges').order('username');
     if (error) throw error;
     allUsers = (data || []).filter(u => u.username !== currentUser);
     renderUserList();
@@ -697,7 +871,7 @@ function renderUserList(query = '') {
       <div class="chat-item" onclick="openChat('${safeName}')">
         <div class="chat-avatar">${getAvatarHtml(name, u.avatar)}</div>
         <div class="chat-info">
-          <div class="chat-name">${name}</div>
+          <div class="chat-name">${name}${getBadgesHtml(u.badges, true)}</div>
           <div class="chat-last">нажми, чтобы написать</div>
         </div>
       </div>
@@ -711,17 +885,14 @@ async function loadMyGroups() {
   try {
     const { data: memberships } = await sb
       .from('group_members').select('group_id').eq('username', currentUser);
-
     const groupIds = (memberships || []).map(m => m.group_id);
     if (groupIds.length === 0) {
       myGroups = [];
       renderGroupList();
       return;
     }
-
     const { data: groupsData } = await sb
       .from('groups').select('*').in('id', groupIds).order('created_at', { ascending: false });
-
     myGroups = groupsData || [];
     renderGroupList();
   } catch (e) {
@@ -780,7 +951,7 @@ function renderCreateUserList() {
     return `
       <div class="user-check-item ${selected ? 'selected' : ''}" onclick="toggleMember('${safeName}')">
         <div class="check-avatar">${getAvatarHtml(name, u.avatar)}</div>
-        <div class="check-name">${name}</div>
+        <div class="check-name">${name}${getBadgesHtml(u.badges, true)}</div>
         <div class="check-box">${selected ? '✓' : ''}</div>
       </div>
     `;
@@ -797,8 +968,7 @@ function toggleMember(name) {
 }
 
 async function createGroup() {
-  const nameInput = document.getElementById('group-name');
-  const groupName = nameInput.value.trim();
+  const groupName = document.getElementById('group-name').value.trim();
   if (!groupName) return alert('Введи название группы');
 
   const btn = document.getElementById('create-group-btn');
@@ -828,7 +998,7 @@ async function createGroup() {
   btn.textContent = 'Создать группу';
 }
 
-// ============ ОТКРЫТИЕ ЧАТА / ГРУППЫ ============
+// ============ ОТКРЫТИЕ ЧАТА ============
 function openChat(otherUser) {
   chatType = 'dm';
   currentChatUser = otherUser;
@@ -887,23 +1057,24 @@ async function openGroupInfo() {
   const sb = window.supabase;
   const { data } = await sb
     .from('group_members').select('username').eq('group_id', currentGroup.id);
-
   const members = (data || []).map(m => m.username);
   const el = document.getElementById('group-members');
 
   const { data: usersData } = await sb
-    .from('users').select('username, avatar').in('username', members);
-
+    .from('users').select('username, avatar, badges').in('username', members);
   const usersMap = {};
-  (usersData || []).forEach(u => usersMap[u.username] = u.avatar);
+  (usersData || []).forEach(u => usersMap[u.username] = u);
 
-  el.innerHTML = members.map(name => `
-    <div class="member-item">
-      <div class="member-avatar">${getAvatarHtml(name, usersMap[name])}</div>
-      <div class="member-name">${name}</div>
-      ${name === currentUser ? '<div class="member-role">это ты</div>' : ''}
-    </div>
-  `).join('');
+  el.innerHTML = members.map(name => {
+    const u = usersMap[name];
+    return `
+      <div class="member-item">
+        <div class="member-avatar">${getAvatarHtml(name, u?.avatar)}</div>
+        <div class="member-name">${name}${u ? getBadgesHtml(u.badges, true) : ''}</div>
+        ${name === currentUser ? '<div class="member-role">это ты</div>' : ''}
+      </div>
+    `;
+  }).join('');
 
   document.getElementById('screen-group-info').classList.add('active');
 }
@@ -915,15 +1086,12 @@ function closeGroupInfo() {
 async function leaveGroup() {
   if (!currentGroup) return;
   if (!confirm(`Выйти из группы "${currentGroup.name}"?`)) return;
-
   const sb = window.supabase;
   const { error } = await sb
     .from('group_members').delete()
     .eq('group_id', currentGroup.id)
     .eq('username', currentUser);
-
   if (error) return alert('Ошибка: ' + error.message);
-
   showToast('Ты вышел из группы');
   closeGroupInfo();
   closeChat();
@@ -980,8 +1148,12 @@ function renderMessages() {
     else content = escapeHtml(m.content);
 
     const time = new Date(m.created_at).toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
-    const senderHtml = (!isMe && chatType === 'group') ? `<span class="sender">${escapeHtml(m.sender)}</span>` : '';
-
+    let senderHtml = '';
+    if (!isMe && chatType === 'group') {
+      const senderData = allUsers.find(u => u.username === m.sender);
+      const badges = senderData ? getBadgesHtml(senderData.badges, true) : '';
+      senderHtml = `<span class="sender">${escapeHtml(m.sender)}${badges}</span>`;
+    }
     return `<div class="msg ${isMe ? 'me' : 'other'}">${senderHtml}${content}<span class="time">${time}</span></div>`;
   }).join('');
   el.scrollTop = el.scrollHeight;
@@ -1050,10 +1222,7 @@ function toggleEmoji() {
 setInterval(() => {
   if (currentChat && realtimeChannel) {
     const state = realtimeChannel.state;
-    if (state !== 'joined') {
-      console.log('Realtime переподключение:', state);
-      subscribeToMessages();
-    }
+    if (state !== 'joined') subscribeToMessages();
   }
 }, 30000);
 
@@ -1068,15 +1237,10 @@ document.addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
   if (touchStartX < 50 && dx > 80 && Math.abs(dy) < 60) {
-    if (document.getElementById('screen-group-info').classList.contains('active')) {
-      closeGroupInfo();
-    } else if (document.getElementById('screen-create-group').classList.contains('active')) {
-      closeCreateGroup();
-    } else if (document.getElementById('screen-settings').classList.contains('active')) {
-      closeSettings();
-    } else if (document.getElementById('screen-chat').classList.contains('active')) {
-      closeChat();
-    }
+    if (document.getElementById('screen-group-info').classList.contains('active')) closeGroupInfo();
+    else if (document.getElementById('screen-create-group').classList.contains('active')) closeCreateGroup();
+    else if (document.getElementById('screen-settings').classList.contains('active')) closeSettings();
+    else if (document.getElementById('screen-chat').classList.contains('active')) closeChat();
   }
 }, { passive: true });
 
